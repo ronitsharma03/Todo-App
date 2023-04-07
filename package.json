@@ -1,0 +1,28 @@
+{
+  "name": "todo-list-v3",
+  "version": "2.0.1",
+  "description": "Todo list with database",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Ronit",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.20.2",
+    "ejs": "^3.1.9",
+    "express": "^4.18.2",
+    "lodash": "^4.17.21",
+    "mongoose": "^7.0.3",
+    "nodemon": "^2.0.22"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ronitsharma03/Todo-App.git"
+  },
+  "bugs": {
+    "url": "https://github.com/ronitsharma03/Todo-App/issues"
+  },
+  "homepage": "https://github.com/ronitsharma03/Todo-App#readme"
+}
