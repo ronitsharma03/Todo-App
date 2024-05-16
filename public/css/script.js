@@ -23,10 +23,10 @@ setTimeout(() => {
 }, 7000);
 
 document.getElementById("about").addEventListener("click", function () {
-    window.location.href = "#";
+    window.location.href = "https://ronitkhajuria.vercel.app";
 });
 document.getElementById("about-1").addEventListener("click", function () {
-    window.location.href = "#";
+    window.location.href = "https://ronitkhajuria.vercel.app";
 });
 
 document.getElementById("home").addEventListener("click", function () {

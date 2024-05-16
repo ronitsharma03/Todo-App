@@ -2,17 +2,28 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 const _ = require("lodash");
+const dotenv = require("dotenv");
+dotenv.config();
 
 const app = express();
 
 app.set("view engine", "ejs");
 
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.json());
 app.use(express.static("public"));
 
-mongoose.connect(
-  "mongodb+srv://admin-ronit:test123@todolistcluster.n8ijwfg.mongodb.net/?retryWrites=true&w=majority"
-);
+async function connectDb(uri){
+  try{
+    await mongoose.connect(uri);
+  }
+  catch(e){
+    console.log(`Error comnnecting to the db: ${e}`);
+    process.exit(1);
+  }
+  
+}
+connectDb(process.env.MONGODB_URI);
 
 const itemSchema = {
   name: String,
@@ -40,15 +51,15 @@ app.get("/", function (req, res) {
 app.post("/newroute", function (req, res) {
   const customList = _.capitalize(req.body.listname);
 
-  app.get(`/${customList}`, function (req, res) {
-    List.findOne({ name: customList })
-      .then((foundList) => {
+  app.get(`/${customList}`, async function (req, res) {
+    await List.findOne({ name: customList })
+      .then(async (foundList) => {
         if (!foundList) {
           const list = new List({
             name: customList,
             items: [],
           });
-          list.save();
+          await list.save();
           res.redirect("/" + customList);
         } else {
           res.render("list", {
@@ -66,7 +77,7 @@ app.post("/newroute", function (req, res) {
 });
 
 //Post request for adding items in any particular list
-app.post("/", function (req, res) {
+app.post("/", async function (req, res) {
   const itemName = req.body.todo;
   const listName = req.body.list;
 
@@ -74,10 +85,10 @@ app.post("/", function (req, res) {
     name: itemName,
   });
   if (listName === "Today") {
-    toDoItem.save();
+    await toDoItem.save();
     res.redirect("/");
   } else {
-    List.findOne({ name: listName }).then((foundList) => {
+    await List.findOne({ name: listName }).then((foundList) => {
       foundList.items.push(toDoItem);
       foundList.save();
       res.redirect("/" + listName);
@@ -86,11 +97,11 @@ app.post("/", function (req, res) {
 });
 
 //Post request for deleting items from DB
-app.post("/delete", function (req, res) {
+app.post("/delete", async function (req, res) {
   const checkedItem = req.body.checkbox;
   const listName = req.body.listName;
   if (listName === "Today") {
-    Item.findByIdAndRemove(checkedItem)
+    await Item.findByIdAndRemove(checkedItem)
       .then(() => {
         console.log("Item deleted Sucessfully with id: ", checkedItem);
         res.redirect("/");
@@ -99,7 +110,7 @@ app.post("/delete", function (req, res) {
         console.log("Failed to delete");
       });
   } else {
-    List.findOneAndUpdate(
+    await List.findOneAndUpdate(
       { name: listName },
       { $pull: { items: { _id: checkedItem } } }
     ).then(() => {
