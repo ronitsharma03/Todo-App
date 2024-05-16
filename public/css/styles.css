@@ -13,6 +13,9 @@ html,body {
   padding: 25px
 
 }
+.dev-link{
+  text-decoration: none;
+}
 .nav-bar ul{
   list-style: none;
   margin: 0;
